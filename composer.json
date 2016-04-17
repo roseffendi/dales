@@ -1,0 +1,21 @@
+{
+    "name": "roseffendi/dales",
+    "description": "PHP jquery datatables server side renderer",
+    "type": "composer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roseffendi",
+            "email": "oii@roseffendi.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Roseffendi\\Dales\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.0"
+    }
+}

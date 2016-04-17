@@ -1,0 +1,5 @@
+suites:
+    dales:
+        namespace: Roseffendi\Dales
+        psr4_prefix: Roseffendi\Dales
+        spec_prefix: tests
