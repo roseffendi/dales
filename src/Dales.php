@@ -37,6 +37,7 @@ class Dales
 
     /**
      * Retrieve datatables raw data
+     * 
      * @return array
      */
     public function getRaw()
@@ -78,6 +79,7 @@ class Dales
 
     /**
      * Render datatables data
+     * 
      * @return array
      */
     public function render()
@@ -94,6 +96,7 @@ class Dales
 
     /**
      * Add additional column to collection
+     * 
      * @param string            $name
      * @param string|callable   $value
      * @return self
@@ -110,6 +113,7 @@ class Dales
 
     /**
      * Set value to given column name
+     * 
      * @param string            $name
      * @param string|callable   $value
      * @return self
@@ -123,6 +127,7 @@ class Dales
 
     /**
      * Set DTParamProvider
+     * 
      * @param DTParamProvider $dtParamProvider
      * @return self
      */
@@ -134,6 +139,7 @@ class Dales
 
     /**
      * Set DTDataProvider
+     * 
      * @param DTDataProvider $dtDataProvider
      * @param array          $scopes
      * @return self
@@ -143,13 +149,8 @@ class Dales
         $this->dtDataProvider = $dtDataProvider;
 
         foreach ($scopes as $scope) {
-            $method = "dtScopeOf" . ucfirst($scope);
-
-            if(!method_exists($this->dtDataProvider, $method)) {
-                throw new BadMethodCallException(get_class($this->dtDataProvider) . " has no method [$method]");
-            }
-
-            $this->dtDataProvider = $this->dtDataProvider->{$method}();
+            $method = "Of" . ucfirst($scope);
+            $this->dtDataProvider = $this->getScope($method);
         }
 
         return $this;
@@ -157,6 +158,7 @@ class Dales
 
     /**
      * Serve applicable data
+     * 
      * @param  array  $available
      * @param  array  $requested
      * @param  array  $data
@@ -192,6 +194,7 @@ class Dales
 
     /**
      * Serve applicable column
+     * 
      * @param  array        $availables
      * @param  array        $requested
      * @return array
@@ -223,6 +226,7 @@ class Dales
 
     /**
      * Pivot data to applicable datatables data
+     * 
      * @param  array $data
      * @return array
      */
@@ -239,6 +243,7 @@ class Dales
 
     /**
      * Retrieve queryable columns
+     * 
      * @param  array  $availables
      * @param  array  $columns
      * @return array
@@ -272,6 +277,7 @@ class Dales
 
     /**
      * Parse columns
+     * 
      * @param  array    $columns
      * @param  null|int $index
      * @return array
@@ -289,5 +295,38 @@ class Dales
         }
 
         return $parsed;
+    }
+
+    /**
+     * Apply scope
+     * 
+     * @param  string $name
+     * @param  array  $arguments
+     * @return self
+     */
+    protected function getScope($name, array $arguments = [])
+    {
+        $method = "dtScope" . ucfirst($name);
+
+        if(method_exists($this->dtDataProvider, $method)){
+            $this->dtDataProvider = call_user_func_array([$this->dtDataProvider, $method], $arguments);
+        }else {
+            dd($method);
+            throw new BadMethodCallException(get_class($this->dtDataProvider) . " has no method [$method]");
+        }
+
+        return $this;
+    }
+
+    /**
+     * Dynamic call to dt data provider
+     * 
+     * @param  string   $name
+     * @param  mixed    $arguments
+     * @return self
+     */
+    public function __call($name, $arguments)
+    {
+        return $this->getScope($name, $arguments);
     }
 }
