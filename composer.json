@@ -18,6 +18,11 @@
     "require-dev": {
         "phpspec/phpspec": "~2.0"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.0-dev"
+        }
+    },
     "config": {
         "preferred-install": "dist"
     }
