@@ -311,7 +311,6 @@ class Dales
         if(method_exists($this->dtDataProvider, $method)){
             $this->dtDataProvider = call_user_func_array([$this->dtDataProvider, $method], $arguments);
         }else {
-            dd($method);
             throw new BadMethodCallException(get_class($this->dtDataProvider) . " has no method [$method]");
         }
 

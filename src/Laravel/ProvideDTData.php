@@ -7,6 +7,20 @@ use DB;
 trait ProvideDTData
 {
     /**
+     * Maximum server side limit 
+     * 
+     * @var integer
+     */
+    protected $maxLimit = 100;
+
+    /**
+     * Datatables model reference
+     * 
+     * @var Builder|Model
+     */
+    protected $dtModel;
+
+    /**
      * Perform ordering
      * @param  array  $orders
      * @param  array  $columns
@@ -33,6 +47,15 @@ trait ProvideDTData
      */
     public function dtPaginate($start, $length)
     {
+        // Never trust client side
+        if($this->maxLimit != -1) {
+            if($length == -1) {
+                $length = $this->maxLimit;
+            }
+
+            $length = min($length, $this->maxLimit);
+        }
+
         if($length == -1)
             $this->dtModel = $this->dtModel->skip($start);
         else
@@ -88,6 +111,7 @@ trait ProvideDTData
 
     /**
      * Perform filter for global
+     * 
      * @param  array  $columns
      * @param  string $search
      * @return self
@@ -103,5 +127,15 @@ trait ProvideDTData
         });
 
         return $this;
+    }
+
+    /**
+     * Set dt model reference
+     * 
+     * @param Builder|Model $dtModel
+     */
+    public function setDTModel($dtModel)
+    {
+        $this->dtModel = $dtModel;
     }
 }
